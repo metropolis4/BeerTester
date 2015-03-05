@@ -16,7 +16,7 @@ var bud = {
 };
 var dummyBeer = {
   name: 'Dummy Beer',
-  ABV: 'eleven',
+  ABV: 11,
   type: 'Lager',
   brewer: 'Brewery'
 };
@@ -80,6 +80,8 @@ describe('deleteBeer /', function(){
   before(function(done){
     budBeer = new Beer(bud);
     budBeer.save();
+    testBeer = new Beer(dummyBeer);
+    testBeer.save();
     done();
   });
 
@@ -93,12 +95,12 @@ describe('deleteBeer /', function(){
 // Check to see if Beer.findById finds a beer with the same id as targetId
   it('should pass if the targeted beer is deleted', function(done){
     var targetId = budBeer.id;
-    var x = Beer.findById(targetId)
+    var x = Beer.findById(targetId);
     request
       .post('/api/deleteBeer')
       .send(budBeer)
       .expect(function(req){
-        console.log(Beer)
+        console.log(Beer);
       })
       .expect(200, done);
   });
