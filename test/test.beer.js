@@ -6,7 +6,8 @@ var apiController = require('../controllers/api.js');
 var app = require('../app.js');
 var request = require('supertest')(app)
   , express = require('express')
-  , mongoose = require('mongoose');
+  , mongoose = require('mongoose')
+  , chai = require('chai');
 
 // TEST BEERS
 var bud = {
@@ -29,10 +30,6 @@ var dummyBeer = {
 };
 
 describe('GET /', function(){
-
-  // beforeEach(function(done) {
-  //   done()
-  // });
 
   afterEach(function(done) {
     Beer.remove({}, function(){
@@ -74,7 +71,8 @@ describe('GET /', function(){
   it('should pass if 200 request is received', function(done){
     request
       .get('/') 
-      .expect(/DOCTYPE/)
+      .expect(/Biergarten/)
+      .expect('content-length', '2435')
       .expect('content-type', "text/html; charset=utf-8")
       .expect(200, done);
   });
@@ -131,6 +129,51 @@ describe('getBeer /', function(){
     });
   });
 
+  it('should pass if the correct beer was found in the db', function(done){
+    var targetId = testBeer.id;
+    request
+      .get('/api/getBeer/' + targetId) //SWITCH OUT TO budBeer.id TO SHOW ERR
+      .expect(function(req){
+        if(req.body._id !== targetId){
+          throw new Error("Returned beer does not match expected");
+        }
+      })
+      .expect(200, done);
+  });
+});
 
+describe('editBeer /', function(){
+  before(function(done){
+    budBeer = new Beer(bud);
+    budBeer.save();
+    testBeer = new Beer(dummyBeer);
+    testBeer.save();
+    done();
+  });
 
+  after(function(done){
+    Beer.remove({}, function(){
+      done();
+    });
+  });
+
+  it('should pass if returned item matches expected edits', function(done){
+    var targetId = testBeer.id;
+    var updateBeerInfo = {
+      name: "This Worked Beer",
+      ABV: 12,
+      type: "Pilsner",
+      brewer: "That Brewer"
+    };
+
+    request
+      .post('/api/editBeer/' + targetId) 
+      .send(updateBeerInfo)
+      .expect(function(req){
+        if(req.body.name !== updateBeerInfo.name || req.body.ABV !== updateBeerInfo.ABV || req.body.type !== updateBeerInfo.type || req.body.brewer !== updateBeerInfo.brewer){
+          throw new Error("Info does not match expected");
+        }
+      })
+      .expect(200, done);
+  });
 });
