@@ -8,7 +8,7 @@ var config = require('./config');
 var mongoose = require('mongoose');
 
 // Seed the database:
-require('./models/seeds/beerSeed.js');
+// require('./models/seeds/beerSeed.js');
 
 var app = express();
 app.set('dbURL', config.db[app.settings.env]);

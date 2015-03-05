@@ -8,11 +8,18 @@ var request = require('supertest')(app)
   , express = require('express')
   , mongoose = require('mongoose');
 
+// TEST BEERS
 var bud = {
   name: 'Budweiser',
   ABV: 5.5,
   type: 'pilsner or lager who knows',
   brewer: 'Inbev'
+};
+var failureBeer = {
+  name: 'Failure Beer',
+  ABV: 'eleven',
+  type: 'Lager',
+  brewer: 'Brewery'
 };
 var dummyBeer = {
   name: 'Dummy Beer',
@@ -36,7 +43,7 @@ describe('GET /', function(){
   // it('should fail if ABV not correct type', function(done){
   //   request
   //     .post('/api/addBeer')
-  //     .send(dummyBeer)
+  //     .send(failureBeer)
   //     .expect(function(req){
   //       if(req.body.ABV !== Number(req.body.ABV)){
   //         throw new Error("ABV is not the correct data type");
@@ -85,23 +92,45 @@ describe('deleteBeer /', function(){
     done();
   });
 
-  // after(function(done){
-  //   Beer.remove({}, function(){
-  //     done();
-  //   });
-  // });
-  
-// THIS IS WHERE YOU WERE!!!
-// Check to see if Beer.findById finds a beer with the same id as targetId
+  after(function(done){
+    Beer.remove({}, function(){
+      done();
+    });
+  });
+
   it('should pass if the targeted beer is deleted', function(done){
     var targetId = budBeer.id;
-    var x = Beer.findById(targetId);
     request
       .post('/api/deleteBeer')
       .send(budBeer)
       .expect(function(req){
-        console.log(Beer);
+        Beer.find({}, function(err, beersFromDb){
+          beersFromDb.map(function(val){
+            if(val._id === targetId){
+              throw new Error("Beer was not deleted");
+            }
+          });
+        });
       })
       .expect(200, done);
   });
+});
+
+describe('getBeer /', function(){
+  before(function(done){
+    budBeer = new Beer(bud);
+    budBeer.save();
+    testBeer = new Beer(dummyBeer);
+    testBeer.save();
+    done();
+  });
+
+  after(function(done){
+    Beer.remove({}, function(){
+      done();
+    });
+  });
+
+
+
 });
