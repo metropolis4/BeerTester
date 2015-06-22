@@ -1,13 +1,13 @@
 process.env.NODE_ENV = 'test';
-var assert = require("assert");
-var Beer = require('../models/beer.js');
-var indexController = require('../controllers/index.js');
-var apiController = require('../controllers/api.js');
-var app = require('../app.js');
-var request = require('supertest')(app)
-  , express = require('express')
-  , mongoose = require('mongoose')
-  , chai = require('chai');
+var assert = require("assert"),
+    Beer = require('../models/beer.js'),
+    indexController = require('../controllers/index.js'),
+    apiController = require('../controllers/api.js'),
+    app = require('../app.js'),
+    express = require('express'),
+    mongoose = require('mongoose'),
+    request = require('supertest')(app),
+    chai = require('chai');
 
 // TEST BEERS
 var bud = {
@@ -37,19 +37,6 @@ describe('GET /', function(){
     });
   });
 
-  // it('should fail if ABV not correct type', function(done){
-  //   request
-  //     .post('/api/addBeer')
-  //     .send(failureBeer)
-  //     .expect(function(req){
-  //       if(req.body.ABV !== Number(req.body.ABV)){
-  //         throw new Error("ABV is not the correct data type");
-  //       }
-
-  //     })
-  //     .expect(200, done);
-  // });
-
   it('should pass when sent a beer', function(done){
     request
       .post('/api/addBeer')
@@ -70,7 +57,7 @@ describe('GET /', function(){
 
   it('should pass if 200 request is received', function(done){
     request
-      .get('/') 
+      .get('/')
       .expect(/Biergarten/)
       .expect('content-length', '2435')
       .expect('content-type', "text/html; charset=utf-8")
@@ -167,7 +154,7 @@ describe('editBeer /', function(){
     };
 
     request
-      .post('/api/editBeer/' + targetId) 
+      .post('/api/editBeer/' + targetId)
       .send(updateBeerInfo)
       .expect(function(req){
         if(req.body.name !== updateBeerInfo.name || req.body.ABV !== updateBeerInfo.ABV || req.body.type !== updateBeerInfo.type || req.body.brewer !== updateBeerInfo.brewer){

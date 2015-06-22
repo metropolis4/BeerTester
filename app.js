@@ -1,18 +1,18 @@
-var express = require('express');
-var bodyParser = require('body-parser');
-var indexController = require('./controllers/index.js');
-var apiController = require('./controllers/api.js');
-var config = require('./config');
+var express = require('express'),
+		bodyParser = require('body-parser'),
+		indexController = require('./controllers/index.js'),
+		apiController = require('./controllers/api.js'),
+		config = require('./config'),
+		mongoose = require('mongoose');
 
 // UNCOMMENT TO SEED DB// Mongoose
-var mongoose = require('mongoose');
 
 // Seed the database:
 // require('./models/seeds/beerSeed.js');
 
 var app = express();
 app.set('dbURL', config.db[app.settings.env]);
-// console.log(app.settings.env);
+console.log("app settings env : " ,app.settings.env);
 app.set('view engine', 'jade');
 app.set('views', __dirname + '/views');
 app.use(express.static(__dirname + '/public'));

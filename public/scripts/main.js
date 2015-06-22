@@ -80,7 +80,6 @@ var beerView = function(e){
   });
 };
 
-
 var beerEdit = function(e){
   e.preventDefault();
 
